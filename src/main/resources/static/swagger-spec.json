@@ -1,0 +1,162 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Building REST services with Kotlin and Spring, JPA"
+  },
+  "host": "localhost:8080",
+  "basePath": "/forum",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "paths": {
+    "/categories": {
+      "get": {
+        "summary": "카테고리(Category)를 조회한다.",
+        "tags": ["forum"]
+      }
+    },
+    "/categories/{categoryId}/topics": {
+      "get": {
+        "summary": "카테고리에 등록된 주제(Topic)를 조회한다.",
+        "parameters": [{
+          "name": "categoryId",
+          "type": "integer",
+          "in": "path",
+          "format": "int64",
+          "required": true,
+          "description": "카테고리 식별번호"
+        }],
+        "tags": ["forum"]
+      },
+      "post": {
+        "summary": "카테고리에 주제(Topic)를 등록한다.",
+        "parameters": [{
+          "name": "categoryId",
+          "type": "integer",
+          "in": "path",
+          "format": "int64",
+          "required": true,
+          "description": "카테고리 식별번호"
+        },{
+          "name": "data",
+          "in": "body",
+          "required": true,
+          "description": "등록할 주제 데이터",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "author": { "type": "string" },
+              "password": { "type": "string" }
+            },
+            "required": [ "title", "author", "password" ],
+            "example": {
+              "title": "주제를 등록합니다.",
+              "author": "arawn",
+              "password": "lol"
+            }
+          }
+        }],
+        "tags": ["forum"]
+      }
+    },
+    "/categories/{categoryId}/topics/{topicId}": {
+      "put": {
+        "summary": "주제(Topic)를 수정한다.",
+        "parameters": [{
+          "name": "categoryId",
+          "type": "integer",
+          "in": "path",
+          "format": "int64",
+          "required": true,
+          "description": "카테고리 식별번호"
+        },{
+          "name": "topicId",
+          "type": "integer",
+          "in": "path",
+          "format": "int64",
+          "required": true,
+          "description": "주제 식별번호"
+        },{
+          "name": "data",
+          "in": "body",
+          "required": true,
+          "description": "수정할 주제 데이터",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "author": { "type": "string" },
+              "password": { "type": "string" }
+            },
+            "required": [ "title", "password" ],
+            "example": {
+              "title": "주제를 수정합니다.",
+              "author": "arawn",
+              "password": "lol"
+            }
+          }
+        }],
+        "tags": ["forum"]
+      },
+      "delete": {
+        "summary": "주제(Topic)를 삭제한다.",
+        "parameters": [{
+          "name": "categoryId",
+          "type": "integer",
+          "in": "path",
+          "format": "int64",
+          "required": true,
+          "description": "카테고리 식별번호"
+        },{
+          "name": "topicId",
+          "type": "integer",
+          "in": "path",
+          "format": "int64",
+          "required": true,
+          "description": "주제 식별번호"
+        },{
+          "name": "data",
+          "in": "body",
+          "required": true,
+          "description": "삭제할 주제 데이터",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "password": { "type": "string" }
+            },
+            "required": [ "password" ],
+            "example": {
+              "password": "lol"
+            }
+          }
+        }],
+        "tags": ["forum"]
+      }
+    },
+    "/categories/{categoryId}/topics/{topicId}/posts": {
+      "get": {
+        "summary": "주제에 등록된 글(Post)을 조회한다.",
+        "parameters": [{
+          "name": "categoryId",
+          "type": "integer",
+          "in": "path",
+          "format": "int64",
+          "required": true,
+          "description": "카테고리 식별번호"
+        },{
+          "name": "topicId",
+          "type": "integer",
+          "in": "path",
+          "format": "int64",
+          "required": true,
+          "description": "주제 식별번호"
+        }],
+        "tags": ["forum"]
+      }
+    }
+  },
+  "tags": [{
+    "name": "forum",
+    "description": "Forum APIs"
+  }]
+}
