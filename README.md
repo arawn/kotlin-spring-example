@@ -45,6 +45,7 @@ IntelliJ IDE를 개발 및 판매하고 있는 젯브레인즈(Jetbrains)사에�
 - [Properties support](https://kotlinlang.org/docs/reference/properties.html#declaring-properties)를 비롯해 타입추론, [Single-Expression function](https://kotlinlang.org/docs/reference/functions.html#single-expression-functions), [Smart Casts](https://kotlinlang.org/docs/reference/typecasts.html) 등으로 코드를 간결하게 작성한다.
 - [확장 메소드](https://kotlinlang.org/docs/reference/extensions.html)로 코드 표현력 좋아진다.
 - null 처리가 매우 안전하다. - [Null Safety](https://kotlinlang.org/docs/reference/null-safety.html)
+- 문자열 내부에서 변수에 접근할 수 있어서 유용했다. [String Interpolation](https://kotlinlang.org/docs/reference/idioms.html#string-interpolation)
 - 강력한 IDE 지원!!! (Java 코드를 Kotlin 코드로 변환해주는 기능도 있다!)
 
 겪었던 문제 또는 불편했던 점...
