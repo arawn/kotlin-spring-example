@@ -26,7 +26,7 @@ class ForumRestController @Autowired constructor(var forumService: ForumService,
     fun topics(@PathVariable categoryId: Long) : List<TopicData> {
         val category = forumService.loadCategory(categoryId)
 
-        return forumService.loadTopics(category).map { TopicData.of(it) }
+        return forumService.loadTopics(category)!!.map { TopicData.of(it) }
     }
 
     @RequestMapping(value = "/categories/{categoryId}/topics", method = arrayOf(POST), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
@@ -34,8 +34,7 @@ class ForumRestController @Autowired constructor(var forumService: ForumService,
         form.category = forumService.loadCategory(categoryId)
 
         validator.validateAndThrow(form, bindingResult, TopicForm.Write::class)
-
-        return TopicData.of(forumService.write(form))
+        return TopicData.of(forumService.write(form)!!)
     }
 
     @RequestMapping(value = "/categories/{categoryId}/topics/{topicId}", method = arrayOf(PUT), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
@@ -61,7 +60,7 @@ class ForumRestController @Autowired constructor(var forumService: ForumService,
         forumService.loadCategory(categoryId)
         val topic = forumService.loadTopic(topicId)
 
-        return forumService.loadPosts(topic).map { PostData.of(it) }
+        return forumService.loadPosts(topic)!!.map { PostData.of(it) }
     }
 
     fun SpringValidatorAdapter.validateAndThrow(target: Any, bindingResult: BindingResult, vararg validationHints: Any) {

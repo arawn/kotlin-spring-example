@@ -15,8 +15,6 @@ fun main(args: Array<String>) {
 }
 
 @SpringBootApplication
-@EnableLoadTimeWeaving
-@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 open class ForumBootApplication {
     
     @Bean

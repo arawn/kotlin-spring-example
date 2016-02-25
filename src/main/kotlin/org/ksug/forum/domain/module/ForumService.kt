@@ -12,21 +12,21 @@ import javax.validation.constraints.NotNull
 
 @Service
 @Transactional
-class ForumService @Autowired constructor(var categoryRepository: CategoryRepository, var topicRepository: TopicRepository, var postRepository: PostRepository) {
+open class ForumService @Autowired constructor(var categoryRepository: CategoryRepository?, var topicRepository: TopicRepository?, var postRepository: PostRepository?) {
 
-    fun categories() = categoryRepository.findAll()
-    fun loadCategory(categoryId: Long) = categoryRepository.findOne(categoryId) ?: throw CategoryNotFoundException(categoryId)
+    fun categories() = categoryRepository?.findAll()
+    fun loadCategory(categoryId: Long) = categoryRepository?.findOne(categoryId) ?: throw CategoryNotFoundException(categoryId)
 
 
-    fun loadTopics(category: Category) = topicRepository.findByCategory(category)
-    fun loadTopic(topicId: Long) = topicRepository.findOne(topicId) ?: throw TopicNotFoundException(topicId)
+    fun loadTopics(category: Category) = topicRepository?.findByCategory(category)
+    fun loadTopic(topicId: Long) = topicRepository?.findOne(topicId) ?: throw TopicNotFoundException(topicId)
 
-    fun write(form: TopicForm) = topicRepository.save(form.create())
+    fun write(form: TopicForm) = topicRepository?.save(form.create())
     fun edit(form: TopicForm) = form.update(loadTopic(form.id ?: Long.MIN_VALUE))
-    fun delete(topic: Topic, rawPassword: String) = topicRepository.delete(topic.checkPassword(rawPassword))
+    fun delete(topic: Topic, rawPassword: String) = topicRepository?.delete(topic.checkPassword(rawPassword))
 
 
-    fun loadPosts(topic: Topic) = postRepository.findByTopic(topic)
+    fun loadPosts(topic: Topic) = postRepository?.findByTopic(topic)
 
 }
 
