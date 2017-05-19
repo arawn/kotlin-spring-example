@@ -39,8 +39,4 @@ data class Post(var text: String
         return this
     }
 
-
-    // for hibernate
-    private constructor() : this("", "")
-
 }

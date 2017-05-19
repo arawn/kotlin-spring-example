@@ -10,10 +10,6 @@ data class Password private constructor(@Column(name = "password") val encodedPa
     fun matches(rawPassword: String) = PasswordHelper.matches(rawPassword, encodedPassword)
 
 
-    // for hibernate
-    private constructor() : this("")
-
-
     companion object {
 
         fun wrap(rawPassword: CharSequence) = Password(PasswordHelper.encode(rawPassword))

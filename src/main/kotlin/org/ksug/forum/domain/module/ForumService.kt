@@ -5,14 +5,13 @@ import org.ksug.forum.domain.*
 import org.ksug.forum.domain.repository.CategoryRepository
 import org.ksug.forum.domain.repository.PostRepository
 import org.ksug.forum.domain.repository.TopicRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import javax.validation.constraints.NotNull
 
 @Service
 @Transactional
-class ForumService @Autowired constructor(var categoryRepository: CategoryRepository, var topicRepository: TopicRepository, var postRepository: PostRepository) {
+class ForumService constructor(var categoryRepository: CategoryRepository, var topicRepository: TopicRepository, var postRepository: PostRepository) {
 
     fun categories() = categoryRepository.findAll()
     fun loadCategory(categoryId: Long) = categoryRepository.findOne(categoryId) ?: throw CategoryNotFoundException(categoryId)
@@ -30,26 +29,25 @@ class ForumService @Autowired constructor(var categoryRepository: CategoryReposi
 
 }
 
-class TopicForm {
+data class TopicForm (
+    @field:NotNull(groups = arrayOf(Edit::class))
+    var id: Long? = null,
+
+    @field:NotEmpty(groups = arrayOf(Write::class, Edit::class))
+    var title: String = "",
+
+    @field:NotEmpty(groups = arrayOf(Write::class, Edit::class))
+    var password: String = "",
+
+    @field:NotEmpty(groups = arrayOf(Write::class))
+    var author: String = "",
+
+    @field:NotNull(groups = arrayOf(Write::class, Edit::class))
+    var category: Category? = null
+) {
 
     interface Write
     interface Edit
-
-    @NotNull(groups = arrayOf(Edit::class))
-    var id: Long? = null
-
-    @NotEmpty(groups = arrayOf(Write::class, Edit::class))
-    var title: String = ""
-
-    @NotEmpty(groups = arrayOf(Write::class, Edit::class))
-    var password: String = ""
-
-    @NotEmpty(groups = arrayOf(Write::class))
-    var author: String = ""
-
-    @NotNull(groups = arrayOf(Write::class, Edit::class))
-    var category: Category? = null
-
 
     internal fun create() = Topic(title, author, password, category ?: throw TopicCreationException("카테고리가 없습니다."))
     internal fun update(target: Topic): Topic {

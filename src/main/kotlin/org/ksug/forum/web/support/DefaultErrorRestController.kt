@@ -50,10 +50,10 @@ class DefaultErrorController @Autowired constructor(var serverProperties: Server
 }
 
 @Configuration
-open class ErrorPropertiesSupport {
+class ErrorPropertiesSupport {
 
     @Bean
-    open fun errorPropertiesPostProcessor(@Value(DefaultErrorController.ERROR_PATH) errorPath: String): BeanPostProcessor {
+    fun errorPropertiesPostProcessor(@Value(DefaultErrorController.ERROR_PATH) errorPath: String): BeanPostProcessor {
         return object : BeanPostProcessor {
             override fun postProcessBeforeInitialization(bean: Any, beanName: String) = bean
             override fun postProcessAfterInitialization(bean: Any, beanName: String): Any {

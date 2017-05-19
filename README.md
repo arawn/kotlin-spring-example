@@ -1,6 +1,108 @@
 Building REST services with Kotlin and Spring, JPA
 ==================================================
 
+> 약 1년전 작성했던 예제를 2017년 5월을 기준으로 보완해본다.
+
+2017년 5월 17일, 구글이 안드로이드 공식 언어로 코틀린(Kotlin)을 추가했다고 발표했다. 작년 2월에 1.0 정식 발표 후 호기심에 예제를 만들어 보았고, 매력적인 언어라고 평가했었다. 개인적으로 JVM 플랫폼 기반 시장의 한 축으로 자리를 잡을 거라고 생각했었는데, 1년이 조금 지난 시점에 멋진 결과를 만들어냈다고 생각한다. 코틀린 팀은 공식 블로그의 [Kotlin on Android. Now official](https://blog.jetbrains.com/kotlin/2017/05/kotlin-on-android-now-official/)를 통해, 코틀린의 비전은 풀스택 웹 애플리케이션, 안드로이드(Android)와 iOS 앱, 임베디드(embedded)/IoT 등 다양한 플랫폼에서 코틀린으로 개발할 수 있도록 하는 것이라고 말했다.
+
+작년 2월 스프링 블로그에서 올라왔던 [Developing Spring Boot applications with Kotlin](https://spring.io/blog/2016/02/15/developing-spring-boot-applications-with-kotlin) 이후 한동안 잠잠했던, 스프링 팀도 올해 1월에 [스프링 프레임워크 5.0이 코틀린을 지원](https://spring.io/blog/2017/01/04/introducing-kotlin-support-in-spring-framework-5-0)할 것이라고 소개했다.
+외부로 드러내진 않았지만, 코틀린의 이슈 트래커나 코틀린과 관련된 오픈소스 프로젝트들을 쫓아다니다 보면 스프링 팀의 커미터들에 글을 종종 볼 수 있다.
+
+작년에 예제를 만들면서 아쉬웠던 점들이 해결이 되었는지 궁금해, 예제를 보완해봤다.
+
+개발환경 변경사항
+------------
+
+- 코틀린(Kotlin) 버전 변경: 1.0.0 -> 1.1.2-2
+- 스프링 부트(Spring Boot) 버전 변경: 1.3.2 -> 1.5.3
+- 스웨거(Swagger) 버전 변경: 2.1.4 -> 3.0.5
+- 핸들바(Handlebars) 제거
+
+
+작년에 겪었던 문제 또는 불편했던 점...
+------------------------------
+
+### | CGLIB 기반 AOP는 올바르게 동작하지 않는다
+
+이 현상은 코틀린의 언어 설계 원칙과 연관이 있다. 아래 내용은 코틀린 [공식문서](https://kotlinlang.org/docs/reference/classes.html#inheritance)에 있는 내용이다.
+
+> By default, all classes in Kotlin are final, which corresponds to Effective Java, Item 17: Design and document for inheritance or else prohibit it.
+>
+> Effective Java, Item 17: 상속에 대한 설계와 문서화를 제대로 하지 않을 거면 아예 상속을 허용하지 말라.
+
+코틀린은 상속에 대해 명확하게 작성하기를 바라기 때문에 필요하다면 open 지시어를 사용하라고 되어 있다.
+그렇기에 AOP를 적용하려는 대상에 open 지시어를 선언해주어야 한다.
+
+```kotlin
+@Service
+@Transactional
+open class ForumService constructor(var categoryRepository: CategoryRepository) {
+
+    open fun categories() = categoryRepository.findAll()
+
+}
+```
+
+대상에는 클래스(class)뿐만이 아니라 메소드(method), 필드(field) 등이 모두 포함된다.
+
+스프링 프레임워크를 기반으로 작성하는 애플리케이션에서 AOP는 매우 광범위하게 사용되기 때문에 실무자의 입장에서는 꽤 번거로운 제약사항이다.
+이 제약사항에 대해 개방(open)파와 폐쇄(final)파가 [다양한 의견을 나누는 글](https://discuss.kotlinlang.org/t/classes-final-by-default/166/2)이 있으니, 관심이 있다면 읽어보자.
+
+어떤 과정을 거쳐 의사결정이 있었는지 알 수 없지만, 코틀린 팀은 [Compiler Plugins](https://kotlinlang.org/docs/reference/compiler-plugins.html#kotlin-spring-compiler-plugin)을 통해 해결책을 제시한듯 하다.
+애노테이션으로 컴파일 시점에 필요한 작업을 끼워넣는 방식이며, 이런 형태의 유명한 도구로 [롬복](https://projectlombok.org)이 있다.
+
+현재 두 개의 플러그인(All-open 플러그인, No-arg 플러그인)이 제공되고 있고, 사용 방법은 빌드 도구(Gradle, Maven)에 몇가지 설정만 추가하면 된다.
+
+All-open 플러그인 적용 후 open 지시어를 일일히 쓰지 않아도 AOP가 잘 동작하는걸 확인 할 수 있었고, 그리고 No-arg 플러그인 덕분에 하이버네이트 엔티티에 기본 생성자(default constructor)를 작성해주지 않는 편리함도 얻었다.
+
+
+```kotlin
+@Entity
+data class Category( var name: String
+                   , val createdAt: Date = Date()) {
+
+
+    // No-arg 플러그인 적용 후 기본 생성자 제거
+    //
+    // for hibernate
+    // private constructor() : this("")
+
+}
+```
+
+### | data class로 빈 검증(JSR-303)을 할 수 있는 방법을 못 찾았다
+
+코틀린이 자바와의 호환성을 유지하기 위해 제공하는 기능인 [Annotation Use-site Targets](https://kotlinlang.org/docs/reference/annotations.html#annotation-use-site-targets)만으로 깔끔하게 불편함이 해소되었다.
+
+```kotlin
+data class TopicForm (
+    @field:NotEmpty
+    var title: String = "",
+
+    @field:NotEmpty
+    var password: String = "",
+
+    @field:NotEmpty
+    var author: String = ""
+)
+```
+
+어렴풋한 기억으로 코틀린 컴파일러 초기 시절에는 애노테이션을 처리하는 방식으로 인해 발생하는 이슈가 있었던걸로 알고 있었는데, 지금은 해소가 된 것일까?
+남은 두가지 불편함은 여전하지만, 사소한 수준이기 때문에 무시해도 될 정도라고 인것 같아, 예제는 이쯤에서 마무리한다.
+
+마무리
+----
+
+구글이 코틀린에 손을 잡아주면서, 안드로이드 진영에서는 앞으로 더 많은 관심을 받지 않을까?
+JVM 서버 진영에서는 스프링이 내민 손을 커뮤니티가 잡아주기를 기대해 본다.
+
+
+---
+
+
+> 아래는 2016년 2월에 작성했던 내용이다.
+
+
 지난 2016년 2월 15일, 스프링 블로그에 [Developing Spring Boot applications with Kotlin](https://spring.io/blog/2016/02/15/developing-spring-boot-applications-with-kotlin) 라는 글이 올라왔다. [코틀린(Kotlin)](https://kotlinlang.org)이라는 언어로 스프링 기반 애플리케이션을 개발해보는것에 대한 글인데... 예제가 너무 간단해서 해당 코드만으로는 어떤 장점이 있는지 알기가 쉽지 않아 직접 예제를 만들어봤다.
 
 직접 개발을 해보며 느꼈던 점과 겪었던 문제들을 간단히 기록해둔다.

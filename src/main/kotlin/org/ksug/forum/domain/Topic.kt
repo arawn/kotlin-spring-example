@@ -53,8 +53,4 @@ data class Topic(var title: String
         return newPost
     }
 
-
-    // for hibernate
-    private constructor() : this("", "")
-
 }

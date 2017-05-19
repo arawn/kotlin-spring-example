@@ -24,8 +24,4 @@ data class Category( var name: String
         return this
     }
 
-
-    // for hibernate
-    private constructor() : this("")
-
 }

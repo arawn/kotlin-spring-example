@@ -7,13 +7,9 @@ server.error.includeStacktrace: ON_TRACE_PARAM
 
 spring.jpa.show-sql: true
 
-handlebars:
-  prefix: "classpath:templates/"
-  registerMessageHelper: true
-  failOnMissingFile: false
-
-logging.level.org.ksug: WARN
-logging.level.org.springframework: INFO
-logging.level.org.springframework.transaction: DEBUG
-logging.level.org.springframework.web: DEBUG
-logging.level.org.springframework.boot: DEBUG
+logging.level:
+  org.ksug: WARN
+  org.springframework: INFO
+  org.springframework.orm: DEBUG
+  org.springframework.web: INFO
+  org.springframework.boot: INFO

@@ -1,17 +1,24 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Building REST services with Kotlin and Spring, JPA"
+    "title": "Building REST services with Kotlin and Spring Boot, Spring Data JPA"
   },
   "host": "localhost:8080",
   "basePath": "/forum",
   "schemes": ["http"],
   "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
-    "/categories": {
-      "get": {
-        "summary": "카테고리(Category)를 조회한다.",
-        "tags": ["forum"]
+    "/categories" : {
+      "get" : {
+        "summary" : "카테고리(Category)를 조회한다.",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          }
+        },
+        "tags" : [ "forum" ]
       }
     },
     "/categories/{categoryId}/topics": {
@@ -25,6 +32,14 @@
           "required": true,
           "description": "카테고리 식별번호"
         }],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          },
+          "404" : {
+            "description" : "resource not found"
+          }
+        },
         "tags": ["forum"]
       },
       "post": {
@@ -56,6 +71,17 @@
             }
           }
         }],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          },
+          "400" : {
+            "description" : "invalid input"
+          },
+          "404" : {
+            "description" : "resource not found"
+          }
+        },
         "tags": ["forum"]
       }
     },
@@ -96,6 +122,17 @@
             }
           }
         }],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          },
+          "400" : {
+            "description" : "invalid input"
+          },
+          "404" : {
+            "description" : "resource not found"
+          }
+        },
         "tags": ["forum"]
       },
       "delete": {
@@ -130,6 +167,14 @@
             }
           }
         }],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          },
+          "404" : {
+            "description" : "resource not found"
+          }
+        },
         "tags": ["forum"]
       }
     },
@@ -151,7 +196,33 @@
           "required": true,
           "description": "주제 식별번호"
         }],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          }
+        },
         "tags": ["forum"]
+      }
+    }
+  },
+  "responses": {
+    "error": {
+      "description": "API 요청 중 오류가 발생했습니다. 오류 내용을 확인하세요.",
+      "schema" : {
+        "$ref" : "#/definitions/Error"
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
       }
     }
   },
