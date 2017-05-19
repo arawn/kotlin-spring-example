@@ -3,7 +3,9 @@ Building REST services with Kotlin and Spring, JPA
 
 > 약 1년전 작성했던 예제를 2017년 5월을 기준으로 보완해본다.
 
-2017년 5월 17일, 구글이 안드로이드 공식 언어로 코틀린(Kotlin)을 추가했다고 발표했다. 작년 2월에 1.0 정식 발표 후 호기심에 예제를 만들어 보았고, 매력적인 언어라고 평가했었다. 개인적으로 JVM 플랫폼 기반 시장의 한 축으로 자리를 잡을 거라고 생각했었는데, 1년이 조금 지난 시점에 멋진 결과를 만들어냈다고 생각한다. 코틀린 팀은 공식 블로그의 [Kotlin on Android. Now official](https://blog.jetbrains.com/kotlin/2017/05/kotlin-on-android-now-official/)를 통해, 코틀린의 비전은 풀스택 웹 애플리케이션, 안드로이드(Android)와 iOS 앱, 임베디드(embedded)/IoT 등 다양한 플랫폼에서 코틀린으로 개발할 수 있도록 하는 것이라고 말했다.
+2017년 5월 17일, 구글이 안드로이드 공식 언어로 코틀린(Kotlin)을 추가했다고 발표했다. 작년 2월에 1.0 정식 발표 후 호기심에 예제를 만들어 보았고, 매력적인 언어라고 평가했었다. 개인적으로 JVM 플랫폼 기반 시장의 한 축으로 자리를 잡을 거라고 생각했었는데, 1년이 조금 지난 시점에 멋진 결과를 만들어냈다고 생각한다.
+
+코틀린 팀은 공식 블로그의 [Kotlin on Android. Now official](https://blog.jetbrains.com/kotlin/2017/05/kotlin-on-android-now-official/)를 통해, 코틀린의 비전은 풀스택 웹 애플리케이션, 안드로이드(Android)와 iOS 앱, 임베디드(embedded)/IoT 등 다양한 플랫폼에서 코틀린으로 개발할 수 있도록 하는 것이라고 말했다.
 
 작년 2월 스프링 블로그에서 올라왔던 [Developing Spring Boot applications with Kotlin](https://spring.io/blog/2016/02/15/developing-spring-boot-applications-with-kotlin) 이후 한동안 잠잠했던, 스프링 팀도 올해 1월에 [스프링 프레임워크 5.0이 코틀린을 지원](https://spring.io/blog/2017/01/04/introducing-kotlin-support-in-spring-framework-5-0)할 것이라고 소개했다.
 외부로 드러내진 않았지만, 코틀린의 이슈 트래커나 코틀린과 관련된 오픈소스 프로젝트들을 쫓아다니다 보면 스프링 팀의 커미터들에 글을 종종 볼 수 있다.
